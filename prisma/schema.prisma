@@ -151,7 +151,7 @@ model Book {
   publisher_id Int
   content      String
   price        Decimal
-  quantity     BigInt
+  quantity     String
   lang_id      Int
   library_id   Int?
   image        String

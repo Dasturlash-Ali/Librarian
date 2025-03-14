@@ -55,9 +55,9 @@ export class CreateBookDto {
         example: 100,
         description: "Kitob soni",
     })
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    readonly quantity: number
+    readonly quantity: string
 
     @ApiProperty({
         example: 3,
