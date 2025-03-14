@@ -1,0 +1,383 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int     @id @default(autoincrement())
+  name                 String
+  phone_number         String
+  email                String  @unique
+  password             String
+  hashed_refresh_token String?
+  address              String
+  balance              String?
+  is_active            Boolean @default(false)
+  gender               String
+  activation_link      String? @unique
+
+  playlistsUser PlaylistsUser[]
+  payments      Payments[]
+  carts         Carts[]
+  userBook      UserBooks[]
+
+  @@map("user")
+}
+
+model Admin {
+  id                   Int     @id @default(autoincrement())
+  name                 String
+  phone_number         String
+  email                String  @unique
+  password             String
+  hashed_refresh_token String?
+  address              String
+  is_active            Boolean @default(false)
+  is_creator           Boolean @default(false)
+
+  @@map("admin")
+}
+
+model Author {
+  id         Int     @id @default(autoincrement())
+  first_name String
+  last_name  String
+  nickname   String?
+  birth_day  String
+  bio        String
+  gender     String
+  image      String
+  books      Book[]
+
+  categoryAuthor CategoryAuthor[]
+
+  @@map("author")
+}
+
+model Publisher {
+  id            Int     @id @default(autoincrement())
+  name          String
+  address       String
+  phone_number  String
+  email         String  @unique
+  website       String
+  founded_year  String
+  country       String
+  active_status Boolean @default(false)
+  logo          String
+  brends        String
+  image         String
+  books         Book[]
+
+  @@map("publisher")
+}
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String
+  parent_id Int?
+  parent    Category?  @relation("CategoryToParent", fields: [parent_id], references: [id])
+  children  Category[] @relation("CategoryToParent")
+
+  categoryAuthor CategoryAuthor[]
+  categoryBook   CategoryBook[]
+
+  @@map("category")
+}
+
+model Library {
+  id            Int           @id @default(autoincrement())
+  name          String
+  address       String
+  description   String
+  image         String
+  bookLibrarian BookLibrary[]
+
+  @@map("library")
+}
+
+model AudioAuthor {
+  id           Int     @id @default(autoincrement())
+  fullname     String
+  nickname     String?
+  phone_number String
+  address      String
+  gender       String
+  image        String
+
+  authorLangs AuthorLangs[]
+  audioBooks  AudioBook[]
+
+  @@map("audio_author")
+}
+
+model Lang {
+  id        Int    @id @default(autoincrement())
+  lang_name String
+
+  authorLangs AuthorLangs[]
+  books       Book[]
+  audioBooks  AudioBook[]
+
+  @@map("lang")
+}
+
+model AuthorLangs {
+  id             Int         @id @default(autoincrement())
+  lang_id        Int
+  audioAuthor_id Int
+  langs          Lang        @relation(fields: [lang_id], references: [id])
+  author         AudioAuthor @relation(fields: [audioAuthor_id], references: [id])
+
+  @@unique([lang_id, audioAuthor_id])
+  @@map("author_langs")
+}
+
+model Book {
+  id           Int     @id @default(autoincrement())
+  name         String
+  year         String
+  author_id    Int
+  publisher_id Int
+  content      String
+  price        Decimal
+  quantity     BigInt
+  lang_id      Int
+  library_id   Int?
+  image        String
+  amount       Int
+
+  author    Author    @relation(fields: [author_id], references: [id])
+  publisher Publisher @relation(fields: [publisher_id], references: [id])
+  lang      Lang      @relation(fields: [lang_id], references: [id])
+
+  audioBooks     AudioBook[]
+  cartItem       CartItem[]
+  categoryAuthor CategoryBook[]
+  bookDiscount   BookDiscount[]
+  bookLibrary    BookLibrary[]
+  userBook       UserBooks[]
+
+  @@map("book")
+}
+
+model BookLibrary {
+  id         Int @id @default(autoincrement())
+  book_id    Int
+  library_id Int
+
+  book    Book    @relation(fields: [book_id], references: [id])
+  library Library @relation(fields: [library_id], references: [id])
+
+  @@unique([book_id, library_id])
+  @@map("book_library")
+}
+
+model AudioBook {
+  id             Int    @id @default(autoincrement())
+  book_id        Int
+  audioItem      String
+  lang_id        Int
+  audioAuthor_id Int
+  amount         Int
+
+  book        Book        @relation(fields: [book_id], references: [id])
+  lang        Lang        @relation(fields: [lang_id], references: [id])
+  audioAuthor AudioAuthor @relation(fields: [audioAuthor_id], references: [id])
+
+  playlistsUser PlaylistsUser[]
+
+  @@map("audio_book")
+}
+
+model PlaylistsUser {
+  id            Int      @id @default(autoincrement())
+  audio_book_id Int
+  user_id       Int
+  bookmark      String
+  createdAt     DateTime @default(now())
+  completed     Boolean
+
+  audioBook AudioBook @relation(fields: [audio_book_id], references: [id])
+  user      User      @relation(fields: [user_id], references: [id])
+
+  @@map("playlists_user")
+}
+
+model UserBooks {
+  id     Int      @id @default(autoincrement())
+  userId Int
+  bookId Int
+  readAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId]) // Bir kitob bir marta o'qilganini ko'rsatadi
+}
+
+model Carts {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  createddAt DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  cartItem CartItem[]
+  order    Order[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id       Int    @id @default(autoincrement())
+  cart_id  Int
+  book_id  Int
+  quantity BigInt
+
+  cart Carts @relation(fields: [cart_id], references: [id])
+  book Book  @relation(fields: [book_id], references: [id])
+
+  orderItems OrderItems[]
+  payments   Payments[]
+
+  @@unique([book_id, cart_id])
+  @@map("cart_item")
+}
+
+model CategoryAuthor {
+  id          Int @id @default(autoincrement())
+  author_id   Int
+  category_id Int
+
+  author   Author   @relation(fields: [author_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@unique([author_id, category_id])
+  @@map("category_author")
+}
+
+model CategoryBook {
+  id          Int @id @default(autoincrement())
+  book_id     Int
+  category_id Int
+
+  book     Book     @relation(fields: [book_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+
+  @@unique([book_id, category_id])
+  @@map("category_book")
+}
+
+model Discount {
+  id         Int    @id @default(autoincrement())
+  amount     Int
+  createdAt  String
+  finishedAt String
+  reason     String
+
+  discount   BookDiscount[]
+  orderItems OrderItems[]
+
+  @@map("discount")
+}
+
+model BookDiscount {
+  id          Int @id @default(autoincrement())
+  book_id     Int
+  discount_id Int
+
+  book     Book     @relation(fields: [book_id], references: [id])
+  discount Discount @relation(fields: [discount_id], references: [id])
+
+  @@unique([book_id, discount_id])
+  @@map("book_discount")
+}
+
+enum PaymentsMethod {
+  CASH //NAQD
+  CARD //KARTA
+}
+
+enum PaymentsStatus {
+  PAID //TO'LANGAN
+  UNPAID //TO'LANMAGAN
+  PARTIALLY_DEBT //QISMAN QARZDOR
+}
+
+model Payments {
+  id             Int            @id @default(autoincrement())
+  user_id        Int
+  cart_item_id   Int
+  payment_method PaymentsMethod
+  status         PaymentsStatus
+  createdAt      String
+  order_id       Int
+
+  user     User     @relation(fields: [user_id], references: [id])
+  cartItem CartItem @relation(fields: [cart_item_id], references: [id])
+  order    Order    @relation(fields: [order_id], references: [id])
+
+  delivery Delivery[]
+
+  @@map("payments")
+}
+
+enum DeliveryStatus {
+  NOT_AVAILABLE //MAVJUD EMAS
+  UNDER_CONSTRUCTION //TAYORLANMOQDA
+  ON_THE_WAY //YO'LDA
+  DELIVERED //YETKAZIB BERILDI
+}
+
+model Delivery {
+  id            Int            @id @default(autoincrement())
+  adress        String
+  status        DeliveryStatus
+  payments_id   Int
+  delivery_type String
+
+  payment    Payments     @relation(fields: [payments_id], references: [id])
+  orderItems OrderItems[]
+
+  @@map("delivery")
+}
+
+model OrderItems {
+  id           Int    @id @default(autoincrement())
+  cart_item_id Int
+  order_status String
+  delivery_id  Int
+  discount_id  Int
+
+  cartItem CartItem @relation(fields: [cart_item_id], references: [id])
+  delivery Delivery @relation(fields: [delivery_id], references: [id])
+  discount Discount @relation(fields: [discount_id], references: [id])
+
+  order Order[]
+
+  @@map("order_items")
+}
+
+model Order {
+  id             Int      @id @default(autoincrement())
+  cart_id        Int
+  order_items_id Int
+  createdAt      DateTime @default(now())
+
+  cart       Carts      @relation(fields: [cart_id], references: [id])
+  orderItems OrderItems @relation(fields: [order_items_id], references: [id])
+  payments   Payments[]
+
+  @@map("order")
+}
