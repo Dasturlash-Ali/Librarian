@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class LangController {
   constructor(private readonly langService: LangService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi til qoshish (faqat admin va superadmin)' })
   @ApiResponse({ status: 201, description: 'Til yaratildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createLangDto: CreateLangDto) {
     return this.langService.create(createLangDto);
@@ -32,17 +32,17 @@ export class LangController {
     return this.langService.findOne(+id);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Tilni yangilash (faqat admin)' })
   @ApiResponse({ status: 200, description: 'Til yangilandi.' })
-  @UseGuards(AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLangDto: UpdateLangDto) {
     return this.langService.update(+id, updateLangDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Tilni ochirish (faqat admin va superadmin)' })
   @ApiResponse({ status: 200, description: 'Til ochirildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.langService.remove(+id);

@@ -2,8 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AdminService } from './admin.service';
 import { CreateAdminDto, UpdateAdminDto } from './dto';
-import { AdminGuard } from '../common/guards/admin-refresh-token.guard';
-import { SuperAdminGuard } from '../common/guards';
+import { AdminGuard, AdminSelfGuard, SuperAdminGuard } from '../common/guards';
 
 @ApiTags('Admin')
 @Controller('admin')
@@ -26,7 +25,7 @@ export class AdminController {
     return this.adminService.findAll();
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard, AdminSelfGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Admin malumotini olish' })
   @ApiResponse({ status: 200, description: 'Admin topildi.' })
@@ -34,7 +33,7 @@ export class AdminController {
     return this.adminService.findOne(+id);
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminGuard, AdminSelfGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Admin malumotlarini yangilash' })
   @ApiResponse({ status: 200, description: 'Admin yangilandi.' })

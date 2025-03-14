@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class CategoryAuthorController {
   constructor(private readonly categoryAuthorService: CategoryAuthorService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Kategoriya va muallifni boglash (faqat SuperAdmin)' })
   @ApiResponse({ status: 201, description: 'Kategoriya va muallif boglandi.' })
-  @UseGuards(SuperAdminGuard)
   @Post()
   create(@Body() createCategoryAuthorDto: CreateCategoryAuthorDto) {
     return this.categoryAuthorService.create(createCategoryAuthorDto);

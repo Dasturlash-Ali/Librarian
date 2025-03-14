@@ -10,22 +10,22 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi kategoriya yaratish' })
   @ApiResponse({ status: 201, description: 'Kategoriya yaratildi.' })
-  @UseGuards(SuperAdminGuard)
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
   @ApiOperation({ summary: 'Barcha kategoriyalarni olish' })
-  @ApiResponse({ status: 200, description: 'Kategoriyalar ro‘yxati.' })
+  @ApiResponse({ status: 200, description: 'Kategoriyalar royxati.' })
   @Get()
   findAll() {
     return this.categoryService.findAll();
   }
 
-  @ApiOperation({ summary: 'Kategoriya ID bo‘yicha olish' })
+  @ApiOperation({ summary: 'Kategoriya ID boyicha olish' })
   @ApiResponse({ status: 200, description: 'Kategoriya topildi.' })
   @ApiResponse({ status: 404, description: 'Kategoriya topilmadi.' })
   @Get(':id')
@@ -33,16 +33,16 @@ export class CategoryController {
     return this.categoryService.findOne(+id);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Kategoriyani yangilash' })
   @ApiResponse({ status: 200, description: 'Kategoriya yangilandi.' })
-  @UseGuards(AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
-  @ApiOperation({ summary: 'Kategoriyani o‘chirish' })
-  @ApiResponse({ status: 200, description: 'Kategoriya o‘chirildi.' })
+  @ApiOperation({ summary: 'Kategoriyani ochirish' })
+  @ApiResponse({ status: 200, description: 'Kategoriya ochirildi.' })
   @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

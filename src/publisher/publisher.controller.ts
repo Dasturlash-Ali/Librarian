@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class PublisherController {
   constructor(private readonly publisherService: PublisherService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi nashriyot qoshish (faqat admin va superadmin)' })
   @ApiResponse({ status: 201, description: 'Nashriyot yaratildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createPublisherDto: CreatePublisherDto) {
     return this.publisherService.create(createPublisherDto);
@@ -32,17 +32,17 @@ export class PublisherController {
     return this.publisherService.findOne(+id);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Nashriyotni yangilash (faqat admin)' })
   @ApiResponse({ status: 200, description: 'Nashriyot yangilandi.' })
-  @UseGuards(AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePublisherDto: UpdatePublisherDto) {
     return this.publisherService.update(+id, updatePublisherDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Nashriyotni ochirish (faqat admin va superadmin)' })
   @ApiResponse({ status: 200, description: 'Nashriyot ochirildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.publisherService.remove(+id);

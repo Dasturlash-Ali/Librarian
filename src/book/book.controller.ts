@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi kitob yaratish' })
   @ApiResponse({ status: 201, description: 'Kitob muvaffaqiyatli yaratildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createBookDto: CreateBookDto) {
     return this.bookService.create(createBookDto);

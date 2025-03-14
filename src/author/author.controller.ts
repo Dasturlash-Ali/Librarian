@@ -10,7 +10,7 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
-  @UseGuards(SuperAdminGuard)
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   @ApiOperation({ summary: 'Yangi muallif yaratish' })
   @ApiResponse({ status: 201, description: 'Muallif yaratildi.' })

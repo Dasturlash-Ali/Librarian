@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class AudioAuthorController {
   constructor(private readonly audioAuthorService: AudioAuthorService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Create a new audio author' })
   @ApiResponse({ status: 201, description: 'Audio author created successfully.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createAudioAuthorDto: CreateAudioAuthorDto) {
     return this.audioAuthorService.create(createAudioAuthorDto);
@@ -50,9 +50,9 @@ export class AudioAuthorController {
     return this.audioAuthorService.update(+id, updateAudioAuthorDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Delete an audio author by ID' })
   @ApiResponse({ status: 200, description: 'Audio author deleted successfully.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.audioAuthorService.remove(+id);

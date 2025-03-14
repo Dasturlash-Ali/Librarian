@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class BookDiscountController {
   constructor(private readonly bookDiscountService: BookDiscountService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Kitobga chegirma qoshish' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createBookDiscountDto: CreateBookDiscountDto) {
     return this.bookDiscountService.create(createBookDiscountDto);

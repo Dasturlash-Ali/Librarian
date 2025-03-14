@@ -176,7 +176,7 @@ export class AuthService {
       const newAdmin = await this.adminService.create(createAdminDto);
 
       try {
-          await this.mailService.sendAdminMail(newAdmin);
+          this.mailService.sendAdminMail(newAdmin);
       } catch (error) {
           console.log(error);
           throw new InternalServerErrorException("Error sending message");

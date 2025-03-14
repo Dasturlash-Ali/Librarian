@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserBookService } from './user-book.service';
 import { UserService } from '../user/user.service';
 import { CreateUserBookDto } from './dto/create-user-book.dto';
 import { UpdateUserBookDto } from './dto/update-user-book.dto';
+import { AdminGuard, AdminSelfGuard, SuperAdminGuard, UserGuard, UserSelfGuard } from '../common/guards';
 
 @ApiTags('User Books')
 @Controller('user-book')
@@ -13,6 +14,7 @@ export class UserBookController {
     private readonly userService: UserService
   ) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Foydalanuvchiga kitob bog‘lash va balansdan yechish' })
   @ApiResponse({ status: 201, description: 'Foydalanuvchi kitobi yaratildi' })
   @ApiResponse({ status: 400, description: 'Xato: foydalanuvchi topilmadi yoki balans yetarli emas' })
@@ -43,6 +45,7 @@ export class UserBookController {
     return this.userBookService.findOne(+id);
   }
 
+  @UseGuards(UserGuard, UserSelfGuard)
   @ApiOperation({ summary: 'Foydalanuvchi kitobini yangilash' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchi kitobi yangilandi' })
   @Patch(':id')
@@ -50,6 +53,7 @@ export class UserBookController {
     return this.userBookService.update(+id, updateUserBookDto);
   }
 
+  @UseGuards(AdminGuard, AdminSelfGuard)
   @ApiOperation({ summary: 'Foydalanuvchi kitobini o‘chirish' })
   @ApiResponse({ status: 200, description: 'Foydalanuvchi kitobi o‘chirildi' })
   @ApiResponse({ status: 404, description: 'Kitob topilmadi' })

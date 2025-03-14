@@ -17,33 +17,33 @@ export class PlaylistsUserController {
     return this.playlistsUserService.create(createPlaylistsUserDto);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Barcha foydalanuvchilar uchun audio kitoblarni olish (faqat admin)' })
   @ApiResponse({ status: 200, description: 'Barcha audio kitoblar royxati.' })
-  @UseGuards(AdminGuard)
   @Get()
   findAll() {
     return this.playlistsUserService.findAll();
   }
 
+  @UseGuards(PlaylistGuard)
   @ApiOperation({ summary: 'Bitta foydalanuvchining audio kitobini olish' })
   @ApiResponse({ status: 200, description: 'Audio kitob topildi.' })
-  @UseGuards(PlaylistGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.playlistsUserService.findOne(+id);
   }
 
+  @UseGuards(PlaylistGuard)
   @ApiOperation({ summary: 'Foydalanuvchining audio kitobini yangilash' })
   @ApiResponse({ status: 200, description: 'Audio kitob yangilandi.' })
-  @UseGuards(PlaylistGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePlaylistsUserDto: UpdatePlaylistsUserDto) {
     return this.playlistsUserService.update(+id, updatePlaylistsUserDto);
   }
 
+  @UseGuards(PlaylistGuard)
   @ApiOperation({ summary: 'Foydalanuvchining audio kitobini ochirish' })
   @ApiResponse({ status: 200, description: 'Audio kitob ochirildi.' })
-  @UseGuards(PlaylistGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.playlistsUserService.remove(+id);

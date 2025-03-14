@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class AuthorLangsController {
   constructor(private readonly authorLangsService: AuthorLangsService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi muallif tili yaratish' })
   @ApiResponse({ status: 201, description: 'Muallif tili yaratildi' })
-  @UseGuards(SuperAdminGuard)
   @Post()
   create(@Body() createAuthorLangDto: CreateAuthorLangDto) {
     return this.authorLangsService.create(createAuthorLangDto);

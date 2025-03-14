@@ -10,8 +10,8 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 export class CategoryBookController {
   constructor(private readonly categoryBookService: CategoryBookService) {}
 
-  @ApiOperation({ summary: 'Kategoriya va kitob boglanishini yaratish' })
   @UseGuards(AdminGuard, SuperAdminGuard)
+  @ApiOperation({ summary: 'Kategoriya va kitob boglanishini yaratish' })
   @Post()
   create(@Body() createCategoryBookDto: CreateCategoryBookDto) {
     return this.categoryBookService.create(createCategoryBookDto);

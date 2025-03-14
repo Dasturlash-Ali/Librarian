@@ -10,40 +10,41 @@ import { AdminGuard, OrderOwnerGuard, SuperAdminGuard } from '../common/guards';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi buyurtma yaratish (faqat admin va superadmin)' })
   @ApiResponse({ status: 201, description: 'Buyurtma yaratildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.create(createOrderDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Barcha buyurtmalarni olish' })
   @ApiResponse({ status: 200, description: 'Barcha buyurtmalar ro‘yxati.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Get()
   findAll() {
     return this.orderService.findAll();
   }
 
+  @UseGuards(OrderOwnerGuard, AdminGuard)
   @ApiOperation({ summary: 'Bitta buyurtmani olish (foydalanuvchi yoki admin)' })
   @ApiResponse({ status: 200, description: 'Buyurtma topildi.' })
-  @UseGuards(OrderOwnerGuard, AdminGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(+id);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Buyurtmani yangilash (faqat admin)' })
   @ApiResponse({ status: 200, description: 'Buyurtma yangilandi.' })
-  @UseGuards(AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.orderService.update(+id, updateOrderDto);
   }
 
-  @ApiOperation({ summary: 'Buyurtmani o‘chirish' })
-  @ApiResponse({ status: 200, description: 'Buyurtma o‘chirildi.' })
+  @UseGuards(AdminGuard, SuperAdminGuard)
+  @ApiOperation({ summary: 'Buyurtmani ochirish' })
+  @ApiResponse({ status: 200, description: 'Buyurtma ochirildi.' })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);

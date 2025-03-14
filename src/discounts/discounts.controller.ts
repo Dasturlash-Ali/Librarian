@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class DiscountsController {
   constructor(private readonly discountsService: DiscountsService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi chegirma yaratish (faqat admin va superadmin)' })
   @ApiResponse({ status: 201, description: 'Chegirma yaratildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createDiscountDto: CreateDiscountDto) {
     return this.discountsService.create(createDiscountDto);
@@ -32,17 +32,17 @@ export class DiscountsController {
     return this.discountsService.findOne(+id);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Chegirmani yangilash (faqat admin)' })
   @ApiResponse({ status: 200, description: 'Chegirma yangilandi.' })
-  @UseGuards(AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDiscountDto: UpdateDiscountDto) {
     return this.discountsService.update(+id, updateDiscountDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Chegirmani ochirish (faqat admin va superadmin)' })
   @ApiResponse({ status: 200, description: 'Chegirma ochirildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.discountsService.remove(+id);

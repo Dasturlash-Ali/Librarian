@@ -10,10 +10,10 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class AudioBookController {
   constructor(private readonly audioBookService: AudioBookService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Create a new audio book' })
   @ApiResponse({ status: 201, description: 'Audio book created successfully.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createAudioBookDto: CreateAudioBookDto) {
     return this.audioBookService.create(createAudioBookDto);
@@ -43,10 +43,10 @@ export class AudioBookController {
     return this.audioBookService.update(+id, updateAudioBookDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Delete an audio book' })
   @ApiResponse({ status: 200, description: 'Audio book deleted successfully.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.audioBookService.remove(+id);

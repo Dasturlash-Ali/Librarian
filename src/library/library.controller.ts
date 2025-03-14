@@ -10,9 +10,9 @@ import { AdminGuard, SuperAdminGuard } from '../common/guards';
 export class LibraryController {
   constructor(private readonly libraryService: LibraryService) {}
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Yangi kutubxona yaratish (admin va superadmin)' })
   @ApiResponse({ status: 201, description: 'Kutubxona yaratildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Post()
   create(@Body() createLibraryDto: CreateLibraryDto) {
     return this.libraryService.create(createLibraryDto);
@@ -32,17 +32,17 @@ export class LibraryController {
     return this.libraryService.findOne(+id);
   }
 
+  @UseGuards(AdminGuard)
   @ApiOperation({ summary: 'Kutubxonani yangilash (admin)' })
   @ApiResponse({ status: 200, description: 'Kutubxona yangilandi.' })
-  @UseGuards(AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLibraryDto: UpdateLibraryDto) {
     return this.libraryService.update(+id, updateLibraryDto);
   }
 
+  @UseGuards(AdminGuard, SuperAdminGuard)
   @ApiOperation({ summary: 'Kutubxonani ochirish (admin va superadmin)' })
   @ApiResponse({ status: 200, description: 'Kutubxona ochirildi.' })
-  @UseGuards(AdminGuard, SuperAdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.libraryService.remove(+id);
